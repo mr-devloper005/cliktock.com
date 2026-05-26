@@ -4,26 +4,25 @@ export type FooterLayoutKey = 'editorial-footer' | 'columns-footer' | 'dense-foo
 export type HomeLayoutKey = 'article-home' | 'listing-home' | 'image-profile-home' | 'classified-home'
 export type MotionPackKey = 'editorial-soft' | 'minimal' | 'studio-stagger' | 'utility-snappy'
 
-export type TaskKey = 'listing' | 'classified' | 'article' | 'image' | 'profile' | 'pdf' | 'sbm' | 'pdf'
+export type TaskKey = 'listing' | 'classified' | 'article' | 'image' | 'profile' | 'pdf' | 'sbm'
 
 export type TaskLayoutKey =
   | 'listing-directory'
   | 'listing-showcase'
   | 'classified-bulletin'
   | 'classified-market'
+  | 'classified-grid'
   | 'article-editorial'
   | 'article-journal'
   | 'image-masonry'
   | 'image-portfolio'
+  | 'image-gallery'
   | 'profile-creator'
   | 'profile-business'
   | 'pdf-library'
   | 'sbm-curation'
   | 'sbm-library'
   | 'sbm-board'
-  | 'pdf-library'
-  | 'classified-grid'
-  | 'image-gallery'
 
 export type BrandPack = {
   key: BrandPackKey
