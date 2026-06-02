@@ -1,44 +1,98 @@
-/*
-  Editable global theme layer.
-
-  Safe for UI editors / AI tools:
-  - Full site background
-  - Global text color
-  - Selection color
-  - Scrollbar feel
-  - Article body typography accents
-
-  Do not add data fetching, scripts, or route logic here.
-*/
-
 body {
   background-color: var(--slot4-page-bg) !important;
   color: var(--slot4-page-text) !important;
   background-image: var(--slot4-body-gradient) !important;
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 8% 18%, var(--slot4-star-a) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 10%, var(--slot4-star-b) 0 1px, transparent 2px),
+    radial-gradient(circle at 28% 82%, rgba(255,255,255,0.2) 0 1px, transparent 2px),
+    radial-gradient(circle at 88% 66%, rgba(159,203,152,0.18) 0 1px, transparent 2px);
+  background-size: 130px 130px, 190px 190px, 260px 260px, 330px 330px;
+  opacity: 0.85;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, transparent 0 34%, rgba(255,255,255,0.025) 34% 35%, transparent 35% 100%),
+    radial-gradient(circle at 50% 42%, rgba(52,103,57,0.2), transparent 32%);
+  opacity: 0.68;
 }
 
 ::selection {
-  background: color-mix(in oklab, var(--slot4-accent-fill) 22%, transparent);
+  background: rgba(0, 233, 134, 0.26);
   color: var(--slot4-page-text);
 }
 
+::-webkit-scrollbar {
+  width: 11px;
+}
+
 ::-webkit-scrollbar-track {
-  background: color-mix(in oklab, var(--slot4-page-bg) 88%, white);
+  background: #050911;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: color-mix(in oklab, var(--slot4-accent) 40%, transparent);
+  background: rgba(121, 174, 111, 0.55);
+  border: 3px solid #050911;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in oklab, var(--slot4-accent) 62%, transparent);
+  background: rgba(0, 233, 134, 0.72);
 }
 
-.article-content h2 {
-  color: var(--slot4-accent);
+.article-content {
+  color: rgba(245, 247, 240, 0.78);
+}
+
+.article-content h2,
+.article-content h3 {
+  color: var(--slot4-page-text);
 }
 
 .article-content a {
   color: var(--slot4-accent-fill);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.article-content p + p {
+  margin-top: 1rem;
+}
+
+.editable-cosmos {
+  position: relative;
+  overflow: hidden;
+}
+
+.editable-cosmos::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 12% 16%, rgba(242,237,194,0.32) 0 1px, transparent 2px),
+    radial-gradient(circle at 80% 24%, rgba(159,203,152,0.28) 0 1px, transparent 2px),
+    radial-gradient(circle at 48% 76%, rgba(255,255,255,0.18) 0 1px, transparent 2px);
+  background-size: 170px 170px, 240px 240px, 310px 310px;
+}
+
+.editable-orbit {
+  background:
+    radial-gradient(circle, rgba(0,233,134,0.18), transparent 34%),
+    repeating-radial-gradient(circle, rgba(159,203,152,0.13) 0 1px, transparent 1px 52px);
 }
