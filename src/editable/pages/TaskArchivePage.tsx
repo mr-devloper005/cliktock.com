@@ -10,6 +10,8 @@ import { taskPageMetadata } from '@/config/site.content'
 import { taskPageVoices } from '@/editable/content/task-pages.content'
 import { EditableSiteShell } from '@/editable/shell/EditableSiteShell'
 import { getVisualPreset, visualSystem } from '@/editable/theme/visual-system'
+import { editableDesignContract as dc } from '@/editable/layouts/design-contract'
+import { Ads } from '@/lib/ads'
 
 export const revalidate = 3
 
@@ -95,19 +97,19 @@ export function TaskArchiveView({ task, posts, pagination, category, basePath }:
   return (
     <EditableSiteShell>
       <main style={archiveVars} className="editable-cosmos bg-[var(--archive-bg)] text-[var(--archive-text)]">
-        <section className="mx-auto grid max-w-[1200px] gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
-          <div className="rounded-lg border border-white/10 bg-[var(--archive-surface)]/90 p-7 shadow-[0_28px_100px_rgba(0,0,0,0.36)] sm:p-10">
+        <section className={`${dc.shell.section} grid gap-8 py-16 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-end lg:py-28`}>
+          <div className={`${dc.surface.card} p-7 sm:p-10`}>
             <div className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-black uppercase tracking-[0.24em] text-[var(--archive-accent)]"><Icon className="h-4 w-4" /> {label}</div>
-            <h1 className="mt-5 max-w-4xl text-5xl font-black leading-tight tracking-tight sm:text-6xl">{voice?.headline || `Browse ${label}`}</h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-white/70">{voice?.description || SITE_CONFIG.description}</p>
-            <div className="mt-6 rounded-lg border border-white/10 bg-white/[0.045] p-4 text-sm font-bold leading-7 text-white/70">{deck.promise}</div>
+            <h1 className={`${dc.type.heroTitle} mt-5 max-w-4xl`}>{voice?.headline || `Browse ${label}`}</h1>
+            <p className={`${dc.type.body} mt-6 max-w-2xl text-white/70`}>{voice?.description || SITE_CONFIG.description}</p>
+            <div className={`${dc.surface.soft} mt-6 p-4 text-sm font-bold leading-7 text-white/70`}>{deck.promise}</div>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href={basePath} className="rounded-md bg-[var(--archive-accent)] px-5 py-3 text-sm font-black text-[#04120c]">Browse all</Link>
-              <Link href="/search" className="rounded-md border border-[var(--archive-accent)] px-5 py-3 text-sm font-black text-[var(--archive-accent)]">Search posts</Link>
+              <Link href={basePath} className={dc.button.primary}>Browse all</Link>
+              <Link href="/search" className={dc.button.secondary}>Search posts</Link>
             </div>
           </div>
 
-          <form action={basePath} className="self-end rounded-lg border border-white/10 bg-white/[0.045] p-5 shadow-[0_20px_70px_rgba(0,0,0,0.26)] backdrop-blur">
+          <form action={basePath} className={`${dc.surface.soft} self-end p-5 shadow-[0_20px_70px_rgba(0,0,0,0.26)] backdrop-blur`}>
             <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-white/50"><Filter className="h-4 w-4" /> Filter</div>
             <select name="category" defaultValue={category} className="mt-4 h-12 w-full rounded-md border border-white/10 bg-[#101621] px-4 text-sm font-bold text-white outline-none">
               <option value="all">All categories</option>
@@ -118,7 +120,11 @@ export function TaskArchiveView({ task, posts, pagination, category, basePath }:
           </form>
         </section>
 
-        <section className="mx-auto max-w-[1200px] px-4 pb-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl px-4 py-6">
+          <Ads slot="in-feed" showLabel eager className="mx-auto w-full" />
+        </div>
+
+        <section className={`${dc.shell.section} pb-20 pt-10 lg:pt-14`}>
           {posts.length ? (
             <div className={deck.archiveClass}>
               {posts.map((post, index) => <ArchivePostCard key={post.id || post.slug} post={post} task={task} basePath={basePath} index={index} />)}

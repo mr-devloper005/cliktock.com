@@ -9,6 +9,8 @@ import { SITE_CONFIG, type TaskKey } from '@/lib/site-config'
 import type { SitePost } from '@/lib/site-connector'
 import { EditableSiteShell } from '@/editable/shell/EditableSiteShell'
 import { pagesContent } from '@/editable/content/pages.content'
+import { editableDesignContract as dc } from '@/editable/layouts/design-contract'
+import { Ads } from '@/lib/ads'
 
 export const revalidate = 3
 
@@ -20,11 +22,23 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-const stripHtml = (value: string) => value.replace(/<[^>]*>/g, ' ')
+const stripHtml = (value: string) =>
+  value
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
 const compactText = (value: unknown) => typeof value === 'string' ? stripHtml(value).replace(/\s+/g, ' ').trim().toLowerCase() : ''
 const getContent = (post: SitePost) => post.content && typeof post.content === 'object' ? post.content as Record<string, unknown> : {}
-const compactRaw = (value: unknown) => typeof value === 'string' ? value.trim() : ''
-const summaryOf = (post: SitePost) => post.summary || compactRaw(getContent(post).description) || compactRaw(getContent(post).excerpt) || ''
+const compactRaw = (value: unknown) => typeof value === 'string' ? stripHtml(value) : ''
+const summaryOf = (post: SitePost) => compactRaw(post.summary) || compactRaw(getContent(post).description) || compactRaw(getContent(post).excerpt) || ''
 
 const matches = (post: SitePost, query: string, category: string, task: string) => {
   const content = getContent(post)
@@ -47,10 +61,10 @@ function SearchResultCard({ post, index }: { post: SitePost; index: number }) {
   const strong = index % 5 === 0
 
   return (
-    <Link href={href} className={`group block overflow-hidden rounded-lg border border-white/10 bg-[#0c1320]/90 shadow-[0_18px_70px_rgba(0,0,0,0.24)] transition hover:-translate-y-1 hover:border-[var(--slot4-accent-fill)]/60 ${strong ? 'md:col-span-2' : ''}`}>
+    <Link href={href} className={`${dc.surface.card} ${dc.motion.lift} group block overflow-hidden ${strong ? 'md:col-span-2' : ''}`}>
       <div className="p-5 sm:p-6">
-        <h2 className="line-clamp-3 text-2xl font-black leading-tight tracking-tight text-white">{post.title}</h2>
-        <p className="mt-4 line-clamp-3 text-sm font-semibold leading-7 text-white/62">{summary || 'Open this entry for details and source context.'}</p>
+        <h2 className="text-2xl font-black leading-tight tracking-tight text-white">{stripHtml(post.title)}</h2>
+        <p className="mt-4 text-sm font-semibold leading-7 text-white/62">{summary || 'Open this entry for details and source context.'}</p>
       </div>
     </Link>
   )
@@ -70,15 +84,15 @@ export default async function SearchPage({ searchParams }: { searchParams?: Prom
 
   return (
     <EditableSiteShell>
-      <main className="editable-cosmos min-h-screen text-white">
-        <section className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-          <div className="grid gap-8 rounded-lg border border-white/10 bg-[#101621]/90 p-6 shadow-[0_28px_100px_rgba(0,0,0,0.34)] backdrop-blur md:grid-cols-[0.8fr_1.2fr] lg:p-10">
+      <main className={`editable-cosmos ${dc.shell.page}`}>
+        <section className={`${dc.shell.section} py-16 sm:py-20 lg:py-28`}>
+          <div className={`${dc.surface.card} grid gap-8 p-6 backdrop-blur md:grid-cols-[0.9fr_1.1fr] md:items-end lg:p-10`}>
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.28em] text-[var(--slot4-accent-fill)]">{pagesContent.search.hero.badge}</p>
-              <h1 className="mt-5 text-5xl font-black leading-tight tracking-tight sm:text-7xl">{pagesContent.search.hero.title}</h1>
-              <p className="mt-6 max-w-xl text-base font-semibold leading-8 text-white/70">{pagesContent.search.hero.description}</p>
+              <p className={`${dc.type.eyebrow} text-[var(--slot4-accent-fill)]`}>{pagesContent.search.hero.badge}</p>
+              <h1 className={`${dc.type.heroTitle} mt-5`}>{pagesContent.search.hero.title}</h1>
+              <p className={`${dc.type.body} mt-6 max-w-xl text-white/70`}>{pagesContent.search.hero.description}</p>
             </div>
-            <form action="/search" className="self-end rounded-lg border border-white/10 bg-white/[0.045] p-4 sm:p-5">
+            <form action="/search" className={`${dc.surface.soft} self-end p-4 sm:p-5`}>
               <input type="hidden" name="master" value="1" />
               <label className="flex items-center gap-3 rounded-md border border-white/10 bg-[#070b14] px-4 py-3">
                 <Search className="h-5 w-5 text-white/45" />
@@ -94,14 +108,14 @@ export default async function SearchPage({ searchParams }: { searchParams?: Prom
                   {enabledTasks.map((item) => <option key={item.key} value={item.key}>{item.label}</option>)}
                 </select>
               </div>
-              <button className="mt-3 inline-flex h-12 w-full items-center justify-center rounded-md bg-[var(--slot4-accent-fill)] px-6 text-sm font-black uppercase tracking-[0.18em] text-[#04120c] transition hover:-translate-y-0.5" type="submit">Search</button>
+              <button className={`${dc.button.primary} mt-3 h-12 w-full uppercase tracking-[0.18em]`} type="submit">Search</button>
             </form>
           </div>
 
           <div className="mt-10 flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.24em] text-white/45">{results.length} results</p>
-              <h2 className="mt-2 text-3xl font-black tracking-tight">{query ? `Results for "${query}"` : pagesContent.search.resultsTitle}</h2>
+              <h2 className={`${dc.type.sectionTitle} mt-2`}>{query ? `Results for "${query}"` : pagesContent.search.resultsTitle}</h2>
             </div>
             <Link href="/article" className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.045] px-5 py-3 text-sm font-black">Browse latest <ArrowRight className="h-4 w-4" /></Link>
           </div>
@@ -116,6 +130,22 @@ export default async function SearchPage({ searchParams }: { searchParams?: Prom
               <p className="mt-3 text-sm font-semibold text-white/60">Try a different keyword, task type, or category.</p>
             </div>
           )}
+
+          <div className="mt-16">
+            <div className="mx-auto max-w-6xl px-4 py-6">
+              <Ads
+                slot="footer"
+                showLabel
+                eager
+                className="mx-auto w-full"
+                fallback={(
+                  <div className="mx-auto max-w-[400px]">
+                    <Ads slot="popup" showLabel eager className="mx-auto w-full" />
+                  </div>
+                )}
+              />
+            </div>
+          </div>
         </section>
       </main>
     </EditableSiteShell>
