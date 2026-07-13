@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LogIn, Menu, PlusCircle, Search, UserPlus, X } from 'lucide-react'
@@ -9,8 +10,18 @@ import { useEditableLocalAuthSession } from '@/editable/components/EditableLocal
 
 function BrandMark() {
   return (
-    <span className="inline-flex items-center text-2xl font-black tracking-tight text-white">
-      CLIKTO<span className="text-[var(--slot4-accent-fill)]">CK</span>
+    <span className="inline-flex items-center gap-3">
+      <Image
+        src="/favicon.png"
+        alt=""
+        width={42}
+        height={42}
+        priority
+        className="h-10 w-10 rounded-lg object-cover"
+      />
+      <span className="text-lg font-black uppercase tracking-tight text-white sm:text-xl">
+        Cliktock
+      </span>
     </span>
   )
 }

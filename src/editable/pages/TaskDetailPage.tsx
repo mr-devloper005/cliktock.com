@@ -7,9 +7,10 @@ import { buildPostUrl, fetchArticleComments, fetchTaskPostBySlug, fetchTaskPosts
 import { getTaskConfig, SITE_CONFIG, type TaskKey } from '@/lib/site-config'
 import type { SitePost } from '@/lib/site-connector'
 import { ProfileHeaderActions } from '@/editable/components/ProfileHeaderActions'
-import { pagesContent } from '@/editable/content/pages.content'
 import { EditableSiteShell } from '@/editable/shell/EditableSiteShell'
 import { getVisualPreset, visualSystem } from '@/editable/theme/visual-system'
+import { editableDesignContract as dc } from '@/editable/layouts/design-contract'
+import { Ads } from '@/lib/ads'
 
 export const revalidate = 3
 
@@ -112,7 +113,7 @@ export function TaskDetailView({ task, post, related, comments = [] }: { task: T
 
   return (
     <EditableSiteShell>
-      <main style={detailVars} className="editable-cosmos bg-[var(--detail-bg)] text-[var(--detail-text)]">
+      <main style={detailVars} className={`editable-cosmos ${dc.shell.page}`}>
         {task === 'listing' ? <ListingDetail post={post} related={related} /> : null}
         {task === 'classified' ? <ClassifiedDetail post={post} related={related} /> : null}
         {task === 'image' ? <ImageDetail post={post} related={related} /> : null}
@@ -120,6 +121,19 @@ export function TaskDetailView({ task, post, related, comments = [] }: { task: T
         {task === 'pdf' ? <PdfDetail post={post} related={related} /> : null}
         {task === 'profile' ? <ProfileDetail post={post} related={related} /> : null}
         {task === 'article' ? <ArticleDetail post={post} related={related} comments={comments} /> : null}
+        <div className="mx-auto max-w-6xl px-4 py-6">
+          <Ads
+            slot="article-bottom"
+            showLabel
+            eager
+            className="mx-auto w-full"
+            fallback={(
+              <div className="mx-auto max-w-[336px]">
+                <Ads slot="sidebar" showLabel eager className="mx-auto w-full" />
+              </div>
+            )}
+          />
+        </div>
       </main>
     </EditableSiteShell>
   )
@@ -276,8 +290,13 @@ function BookmarkDetail({ post, related }: { post: SitePost; related: SitePost[]
 
               <div className="relative mt-10 h-px w-full bg-gradient-to-r from-[var(--detail-accent)]/60 via-white/10 to-transparent" />
             </div>
-
-            
+            <aside className="flex items-center border-t border-white/10 bg-white/[0.035] p-7 lg:border-l lg:border-t-0">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-white/42">Original source</p>
+                <p className="mt-4 text-sm leading-7 text-white/65">Continue to the saved page when you are ready to explore the full resource.</p>
+                {website ? <Link href={website} target="_blank" rel="nofollow noopener noreferrer" className={`${dc.button.primary} mt-6 w-full`}>Visit resource <ExternalLink className="h-4 w-4" /></Link> : null}
+              </div>
+            </aside>
           </div>
 
           <div className="grid gap-6 border-t border-white/10 p-5 sm:p-7 lg:grid-cols-[minmax(0,1fr)_320px] lg:p-10">
@@ -355,107 +374,50 @@ function ProfileDetail({ post, related }: { post: SitePost; related: SitePost[] 
   const email = getField(post, ['email'])
   const category = categoryOf(post, 'Profile')
   return (
-    <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-      <div className="mx-auto max-w-[1200px]">
+    <section className={`${dc.shell.section} py-14 sm:py-20 lg:py-24`}>
+      <div>
         <BackLink task="profile" />
-
-        <article className="mt-7 overflow-hidden rounded-[2rem] border border-[#d9dbe7] bg-[#f8f7f4] text-[#232b4b] shadow-[0_28px_90px_rgba(10,20,40,0.18)]">
-          <div className="relative border-b border-[#e3e5ee] bg-[radial-gradient(circle_at_top,rgba(55,84,255,0.14),transparent_22%),linear-gradient(180deg,#fbfaf7_0%,#f6f5f1_100%)] px-6 py-8 sm:px-10 lg:px-12 lg:py-12">
-            <div className="absolute left-1/2 top-0 h-10 w-40 -translate-x-1/2 rounded-b-full bg-black/90 blur-[10px]" />
-            <div className="grid gap-8 lg:grid-cols-[150px_minmax(0,1fr)_220px] lg:items-start">
-              <div className="flex items-start justify-center lg:justify-start">
-                <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-[1.75rem] border border-[#dde0eb] bg-white shadow-sm">
-                  {heroImage ? <img src={heroImage} alt="" className="h-full w-full object-cover" /> : <UserRound className="h-11 w-11 text-[#6f7691]" />}
-                </div>
-              </div>
-
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="rounded-full bg-[#4058dd] px-4 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-white">{category}</span>
-                  {role ? <span className="text-xs font-black uppercase tracking-[0.18em] text-[#4f5877]">{role}</span> : null}
-                </div>
-                <h1 className="mt-5 text-4xl font-black leading-tight tracking-tight text-[#2a335a] sm:text-5xl">{post.title}</h1>
-                <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold text-[#2f3659]">
-                  {company ? <span>{company}</span> : null}
-                  {location ? <span>{location}</span> : null}
-                  {website ? <Link href={website} target="_blank" rel="noreferrer" className="underline decoration-[#4058dd]/35 underline-offset-4 hover:text-[#4058dd]">{pagesContent.detailPages.profile.visitButton}</Link> : null}
-                </div>
-              </div>
-
-              <ProfileHeaderActions />
+        <article className={`${dc.surface.card} relative mt-7 overflow-hidden p-6 sm:p-9 lg:p-12`}>
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_5%,rgba(0,233,134,0.18),transparent_28%)]" />
+          <div className="relative grid gap-8 lg:grid-cols-[150px_minmax(0,1fr)_220px] lg:items-start">
+            <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-black/30">
+              {heroImage ? <img src={heroImage} alt="" className="h-full w-full object-cover" /> : <UserRound className="h-12 w-12 text-white/45" />}
             </div>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="rounded-md bg-[var(--detail-accent)] px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#04120c]">{category}</span>
+                {role ? <span className="text-xs font-black uppercase tracking-[0.18em] text-white/48">{role}</span> : null}
+              </div>
+              <h1 className={`${dc.type.heroTitle} mt-5`}>{post.title}</h1>
+              <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold text-white/65">
+                {company ? <span>{company}</span> : null}
+                {location ? <span>{location}</span> : null}
+              </div>
+            </div>
+            <ProfileHeaderActions />
           </div>
 
-          <div className="px-6 py-6 sm:px-10 lg:px-12">
-            <div className="flex items-center gap-6 border-b border-[#dfe2ed] text-sm font-black text-[#747b94]">
-              <span className="border-b-2 border-[#4058dd] pb-3 text-[#4058dd]">Overview</span>
-              {/* <span className="pb-3">Public activity</span> */}
-            </div>
-
-            <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
-              <section className="min-w-0">
-                <div className="rounded-[1.5rem] border border-[#dfe2ed] bg-white p-6 shadow-[0_12px_32px_rgba(44,56,96,0.06)] sm:p-8">
-                  <p className="text-xs font-black uppercase tracking-[0.22em] text-[#6f7691]">About</p>
-                  <div
-                    className="article-content mt-5 max-w-none text-[15px] leading-8"
-                    style={{ color: '#111111' }}
-                    dangerouslySetInnerHTML={{ __html: formatPlainText(getBody(post)) }}
-                  />
-                </div>
-
-                {gallery.length ? (
-                  <section className="mt-8">
-                    <div className="mb-4 flex items-center justify-between gap-3">
-                      <h2 className="text-2xl font-black tracking-tight text-[#2a335a]">Media</h2>
-                      <p className="text-xs font-black uppercase tracking-[0.18em] text-[#7a829c]">{gallery.length} items</p>
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                      {gallery.slice(0, 6).map((image, index) => (
-                        <figure key={`${image}-${index}`} className="overflow-hidden rounded-[1.25rem] border border-[#dde0eb] bg-white shadow-[0_10px_26px_rgba(44,56,96,0.06)]">
-                          <img src={image} alt="" className="aspect-[4/3] w-full object-cover" />
-                        </figure>
-                      ))}
-                    </div>
-                  </section>
-                ) : (
-                  <section className="mt-8 rounded-[1.75rem] border border-[#dde0eb] bg-[linear-gradient(180deg,#f9f8f5_0%,#f2f1ec_100%)] px-6 py-10 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] sm:px-10">
-                    <div className="mx-auto flex h-36 w-36 items-center justify-center">
-                      <div className="relative flex h-28 w-20 items-end justify-center rounded-[2rem_2rem_0.75rem_0.75rem] bg-[linear-gradient(180deg,#ff8b6f_0%,#ef6d4f_100%)] shadow-[0_12px_20px_rgba(40,20,12,0.18)]">
-                        <span className="absolute -bottom-2 h-3 w-28 rounded-full bg-[#231d1c]" />
-                        <span className="absolute left-3 top-7 h-9 w-3 rounded-full bg-[linear-gradient(180deg,#ff9f87_0%,#f06e51_100%)]" />
-                        <span className="absolute right-3 top-10 h-8 w-3 rounded-full bg-[linear-gradient(180deg,#ff9f87_0%,#f06e51_100%)]" />
-                        <span className="absolute left-1/2 top-2 h-16 w-4 -translate-x-1/2 rounded-full bg-[linear-gradient(180deg,#ff9f87_0%,#f06e51_100%)]" />
-                      </div>
-                    </div>
-                    <h2 className="mt-4 text-4xl font-black tracking-tight text-[#2a335a]">Nothing planned right now</h2>
-                    <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-[#5c657f]">This profile does not have extra public media at the moment. The overview stays available so visitors can still review the profile details and contact options.</p>
-                    {website ? <Link href={website} target="_blank" rel="noreferrer" className="mt-6 inline-flex rounded-md bg-[#4058dd] px-6 py-3 text-sm font-black text-white transition hover:bg-[#3349c4]">Visit profile</Link> : null}
-                  </section>
-                )}
+          <div className="relative mt-10 grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+            <div className="min-w-0">
+              <section className={`${dc.surface.soft} p-6 sm:p-8`}>
+                <p className={`${dc.type.eyebrow} text-[var(--detail-accent)]`}>About</p>
+                <BodyContent post={post} compact />
               </section>
-
-              <aside className="space-y-5">
-                <div className="rounded-[1.5rem] border border-[#dde0eb] bg-white p-6 shadow-[0_12px_32px_rgba(44,56,96,0.06)]">
-                  <p className="text-xs font-black uppercase tracking-[0.22em] text-[#6f7691]">Profile details</p>
-                  <div className="mt-5 grid gap-4 text-sm font-bold text-[#2f3659]">
-                    {role ? <div><p className="text-[11px] uppercase tracking-[0.16em] text-[#8a90a7]">Role</p><p className="mt-1">{role}</p></div> : null}
-                    {company ? <div><p className="text-[11px] uppercase tracking-[0.16em] text-[#8a90a7]">Organization</p><p className="mt-1">{company}</p></div> : null}
-                    {location ? <div><p className="text-[11px] uppercase tracking-[0.16em] text-[#8a90a7]">Location</p><p className="mt-1">{location}</p></div> : null}
-                    {email ? <div><p className="text-[11px] uppercase tracking-[0.16em] text-[#8a90a7]">Email</p><p className="mt-1 break-all">{email}</p></div> : null}
-                  </div>
-                </div>
-
-                {(website || email) ? (
-                  <div className="rounded-[1.5rem] border border-[#dde0eb] bg-white p-6 shadow-[0_12px_32px_rgba(44,56,96,0.06)]">
-                    <p className="text-xs font-black uppercase tracking-[0.22em] text-[#6f7691]">Quick actions</p>
-                    <div className="mt-4 grid gap-3">
-                      {website ? <Link href={website} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#4058dd] px-4 py-3 text-sm font-black text-white transition hover:bg-[#3349c4]">Open site <ExternalLink className="h-4 w-4" /></Link> : null}
-                      {email ? <a href={`mailto:${email}`} className="inline-flex items-center justify-center gap-2 rounded-md border border-[#c7cce0] px-4 py-3 text-sm font-black text-[#2b3763] transition hover:border-[#4058dd] hover:text-[#4058dd]"><Mail className="h-4 w-4" /> Email</a> : null}
-                    </div>
-                  </div>
-                ) : null}
-              </aside>
+              {gallery.length ? <ImageStrip images={gallery.slice(0, 8)} label="Profile media" /> : null}
             </div>
+            <aside className="space-y-5">
+              <div className={`${dc.surface.soft} p-6`}>
+                <p className={`${dc.type.eyebrow} text-white/45`}>Profile details</p>
+                <div className="mt-5 grid gap-4 text-sm font-bold text-white/70">
+                  {role ? <p>Role: {role}</p> : null}
+                  {company ? <p>Organization: {company}</p> : null}
+                  {location ? <p>Location: {location}</p> : null}
+                  {email ? <p className="break-all">Email: {email}</p> : null}
+                </div>
+              </div>
+              <ContactAction website={website} email={email} />
+              <RelatedPanel task="profile" post={post} related={related} compact />
+            </aside>
           </div>
         </article>
       </div>

@@ -200,7 +200,7 @@ export function EditableTimeCollections({ primaryTask, primaryRoute, posts, time
       <section className="editable-cosmos bg-[#070b14] px-4 py-20 sm:px-6 lg:py-28">
         <SectionHeader title="Latest" green="Insights" subtitle="Fresh public entries from the CLIKTOCK archive." />
         <div className="mx-auto mt-14 grid max-w-[1200px] gap-5 md:grid-cols-3">
-          {latest.map((post, index) => (
+          {latest.map((post) => (
             <Link key={post.id || post.slug} href={postHref(primaryTask, post, primaryRoute)} className={`${dc.surface.card} p-7 ${dc.motion.lift}`}>
               <p className="text-xs font-black text-[var(--slot4-accent-fill)]">Saved Resource <span className="ml-2 text-white/35">{Math.max(3, getEditableExcerpt(post).length % 8)} min read</span></p>
               <h3 className="mt-6 line-clamp-3 text-lg font-black leading-snug text-white">{post.title}</h3>
