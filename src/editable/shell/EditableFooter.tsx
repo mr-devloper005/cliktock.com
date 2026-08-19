@@ -15,8 +15,9 @@ export function EditableFooter() {
     <footer className="editable-cosmos border-t border-white/10 bg-[#070b14] text-white">
       <div className="relative mx-auto grid max-w-[1200px] gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr] lg:px-8">
         <div>
-          <Link href="/" className="text-2xl font-black tracking-tight">
-            CLIKTO<span className="text-[var(--slot4-accent-fill)]">CK</span>
+          <Link href="/" className="inline-flex items-center gap-3">
+            <img src="/favicon.png?v=20260413" alt={SITE_CONFIG.name} className="h-10 w-10 object-contain" />
+            <span className="text-2xl font-black tracking-tight">CLIKTO<span className="text-[var(--slot4-accent-fill)]">CK</span></span>
           </Link>
           <p className="mt-4 max-w-md text-sm leading-7 text-white/62">{globalContent.footer.description}</p>
           <p className="mt-5 text-xs font-black uppercase tracking-[0.28em] text-[var(--slot4-accent-fill)]">{globalContent.footer.bottomNote}</p>
