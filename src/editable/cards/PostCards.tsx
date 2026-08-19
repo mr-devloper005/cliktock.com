@@ -23,7 +23,7 @@ export function getEditableExcerpt(post?: SitePost | null, limit = 150) {
     (typeof content.excerpt === 'string' && content.excerpt) ||
     post?.summary ||
     ''
-  const clean = raw.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+  const clean = raw.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
   return clean.length > limit ? `${clean.slice(0, limit).trim()}...` : clean || 'Open the post for details, context, and source information.'
 }
 
